@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FFNN Regression mit TensorFlow.js</title>
+  <link rel="stylesheet" href="./style.css">
+  <!-- Plotly for charts -->
+  <script src="https://cdn.plot.ly/plotly-2.24.2.min.js"></script>
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.14.0/dist/tf.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <h1>Regression mit FFNN (TensorFlow.js)</h1>
+    <p>y(x) = 0.5*(x+0.8)*(x+1.8)*(x-0.2)*(x-0.3)*(x-1.9)+1 auf [-2,2]</p>
+  </header>
+
+  <main class="container">
+    <section class="controls">
+      <h2>Datensatz & Training</h2>
+      <div class="control-row">
+        <label>N gesamt: <input id="numPoints" type="number" value="100" min="10" max="1000"></label>
+        <label>Varianz Rauschen V: <input id="noiseVar" type="number" value="0.05" step="0.01" min="0"></label>
+      </div>
+      <div class="control-row">
+        <button id="btn-generate" type="button">Datensatz erzeugen</button>
+        <button id="btn-save-data" type="button">Dataset speichern</button>
+        <button id="btn-load-data" type="button">Dataset laden</button>
+      </div>
+      <div id="status" class="status-message">Bereit. Klicken Sie auf "Datensatz erzeugen".</div>
+
+      <div class="control-row">
+        <label>Epochs Best-Fit: <input id="epochsBest" type="number" value="50" min="1"></label>
+        <label>Epochs Over-Fit: <input id="epochsOver" type="number" value="500" min="1"></label>
+      </div>
+      <div class="control-row">
+        <button id="btn-train-clean">Trainieren (ohne Rauschen)</button>
+        <button id="btn-train-best">Trainieren (Best-Fit auf verrauscht)</button>
+        <button id="btn-train-over">Trainieren (Overfit auf verrauscht)</button>
+      </div>
+
+      <div class="control-row">
+        <button id="btn-save-model">Modell speichern (IndexedDB)</button>
+        <button id="btn-load-model">Modell laden (IndexedDB)</button>
+      </div>
+    </section>
+
+    <section class="results">
+      <div class="grid">
+        <div class="card">
+          <h3>R1: Datensatz (links ohne Rauschen, rechts mit Rauschen)</h3>
+          <div id="plot-data" class="plot"></div>
+        </div>
+
+        <div class="card">
+          <h3>R2: Vorhersage (ohne Rauschen)</h3>
+          <div id="plot-clean" class="plot"></div>
+          <div class="loss" id="loss-clean"></div>
+        </div>
+
+        <div class="card">
+          <h3>R3: Vorhersage Best-Fit (verrauscht)</h3>
+          <div id="plot-best" class="plot"></div>
+          <div class="loss" id="loss-best"></div>
+        </div>
+
+        <div class="card">
+          <h3>R4: Vorhersage Overfit (verrauscht)</h3>
+          <div id="plot-over" class="plot"></div>
+          <div class="loss" id="loss-over"></div>
+        </div>
+
+        <div class="card wide">
+          <h3>Training Loss-Verlauf</h3>
+          <div id="plot-losses" class="plot"></div>
+        </div>
+
+        <div class="card wide">
+          <h3>Diskussion & Dokumentation</h3>
+          <div id="discussion">
+            <h4>Kurze Diskussion (max. 10 Sätze)</h4>
+            <p id="discussion-text">Ergebnisse erscheinen hier nach Experimenten. Parameterauswahl: 2 hidden layers × 100 Neuronen, ReLU, Adam lr=0.01, Batch 32. Beobachten Sie Train- vs Test-MSE; Overfitting zeigt sich als viel kleinerer Trainings-MSE als Test-MSE.</p>
+            <h4>Technisch</h4>
+            <ul>
+              <li>TensorFlow.js – Modellbau, Training, Speichern/Laden (IndexedDB).</li>
+              <li>Plotly – interaktive Plots für Daten, Vorhersagen und Loss.</li>
+            </ul>
+            <h4>Fachlich</h4>
+            <p>Datengenerierung entspricht Aufgabenstellung. Testdaten werden NICHT für Training verwendet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
